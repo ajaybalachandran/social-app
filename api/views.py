@@ -58,3 +58,5 @@ class UsersView(ViewSet):
 class PostsModelView(ModelViewSet):
     serializer_class = PostSerializer
     queryset = Posts.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
