@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
-from api.serializers import PostSerializer, UserSerializer
+from api.serializers import PostSerializer, UserSerializer, CommentModelSerializer
 from api.models import Posts
 from rest_framework import authentication, permissions
 from rest_framework.decorators import action
@@ -75,4 +75,13 @@ class PostsModelView(ModelViewSet):
         user = request.user
         qs = user.posts_set.all()
         serializer = PostSerializer(qs, many=True)
+        return Response(serializer.data)
+
+    @action(methods=["GET"], detail=True)
+    # localhost:8000/api/v2/posts/1/get_comments/
+    def get_comments(self, request, *args, **kwargs):
+        id = kwargs.get('pk')
+        post = Posts.objects.get(id=id)
+        qs = post.comments_set.all()
+        serializer = CommentModelSerializer(qs, many=True)
         return Response(serializer.data)

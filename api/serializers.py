@@ -1,4 +1,4 @@
-from api.models import Posts
+from api.models import Posts, Comments
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -22,4 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class CommentModelSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    post = serializers.CharField(read_only=True)
+    user = serializers.CharField(read_only=True)
+    class Meta:
+        model = Comments
+        fields = "__all__"
 
