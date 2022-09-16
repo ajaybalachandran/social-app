@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from api.serializers import PostSerializer, UserSerializer
 from api.models import Posts
 from rest_framework import authentication, permissions
+from rest_framework.decorators import action
 # Create your views here.
 
 class PostsView(ViewSet):
@@ -67,4 +68,11 @@ class PostsModelView(ModelViewSet):
             serializer.save()
             return Response(data=serializer.data)
 
-
+# custom method
+    @action(methods=["GET"], detail=False)
+    # localhost:8000/api/v2/posts/my_posts/
+    def my_posts(self, request, *args, **kwargs):
+        user = request.user
+        qs = user.posts_set.all()
+        serializer = PostSerializer(qs, many=True)
+        return Response(serializer.data)
