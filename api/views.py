@@ -60,3 +60,11 @@ class PostsModelView(ModelViewSet):
     queryset = Posts.objects.all()
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):  # 2 --> 3 in serializers
+        serializer = PostSerializer(data=request.data, context={'usr': request.user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+
+
