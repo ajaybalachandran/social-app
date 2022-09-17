@@ -73,7 +73,8 @@ class PostsModelView(ModelViewSet):
     # localhost:8000/api/v2/posts/my_posts/
     def my_posts(self, request, *args, **kwargs):
         user = request.user
-        qs = user.posts_set.all()
+        # qs = user.posts_set.all()
+        qs = user.post.all()
         serializer = PostSerializer(qs, many=True)
         return Response(serializer.data)
 
@@ -85,3 +86,14 @@ class PostsModelView(ModelViewSet):
         qs = post.comments_set.all()
         serializer = CommentModelSerializer(qs, many=True)
         return Response(serializer.data)
+
+    @action(methods=['POST'], detail=True)
+    def add_comments(self, request, *args, **kwargs):
+        id = kwargs.get('pk')
+        pst = Posts.objects.get(id=id)
+        serializer = CommentModelSerializer(data=request.data, context={'user': request.user, "post": pst})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(serializer.errors)

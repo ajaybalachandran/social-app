@@ -32,3 +32,8 @@ class CommentModelSerializer(serializers.ModelSerializer):
         model = Comments
         fields = "__all__"
 
+    def create(self, validated_data):
+        user = self.context.get('user')
+        post = self.context.get('post')
+        return Comments.objects.create(**validated_data, user=user, post=post)
+
