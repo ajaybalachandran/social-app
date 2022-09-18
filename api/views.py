@@ -97,3 +97,18 @@ class PostsModelView(ModelViewSet):
             return Response(data=serializer.data)
         else:
             return Response(serializer.errors)
+
+    @action(methods=["POST"], detail=True)
+    def add_like(self, request, *args, **kwargs):
+        id = kwargs.get('pk')
+        pst = Posts.objects.get(id=id)
+        user = request.user
+        pst.liked_by.add(user)
+        return Response(data="ok")
+
+    @action(methods=["GET"], detail=True)
+    def get_likes(self, request, *args, **kwargs):
+        id = kwargs.get('pk')
+        pst = Posts.objects.get(id=id)
+        cnt = pst.liked_by.all().count()
+        return Response(data=cnt)

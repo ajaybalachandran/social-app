@@ -2,9 +2,22 @@ from api.models import Posts, Comments
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email", "username", "password"]
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
 class PostSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     user = serializers.CharField(read_only=True)  # 1 --> 2 in views
+    liked_by = UserSerializer(many=True, read_only=True)
+    like_count = serializers.CharField(read_only=True)
     class Meta:
         model = Posts
         exclude = ("date", )
@@ -13,15 +26,6 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):  # 3
         user = self.context.get('usr')
         return Posts.objects.create(**validated_data, user=user)
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["first_name", "last_name", "email", "username", "password"]
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
