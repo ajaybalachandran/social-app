@@ -130,7 +130,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# step 1(jwt) --> adding jwt authentication
+# step1(jwt)--> add 'rest_framework_simplejwt', to Installed apps
+# step 2(jwt) --> adding jwt authentication
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -140,9 +141,9 @@ REST_FRAMEWORK = {
 
 }
 
-# step 2(jwt)--> go to views.py and comment down the authentication_classes
-# step 3(jwt)--> go to urls.py and map the url path
-'''step 4(jwt)--> the code written below is to modify the properties of jwt token like 
+# step 3(jwt)--> go to views.py and comment down the authentication_classes
+# step 4(jwt)--> go to urls.py and map the url path
+'''step 5(jwt)--> the code written below is to modify the properties of jwt token like 
 lifetime of access, refresh tokens, etc.'''
 # from datetime import timedelta
 SIMPLE_JWT = {
